@@ -5,7 +5,7 @@ Future<String> ernieClassify(String text, {String? assistantMessage}) async {
   Classify the following feedback into 1 of the following categories: 
   Technical support, system stability, user experience, feature requests and enhancement,
   security, training and documentation, cost-effectiveness, overall satisfaction,
-  return me just one word.
+  return me just one word, do not explain.
   ''';
 
   try {

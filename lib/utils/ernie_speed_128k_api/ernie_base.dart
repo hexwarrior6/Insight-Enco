@@ -3,7 +3,17 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ErnieAPI {
+  static String? _cachedAccessToken;
+  static DateTime? _tokenExpiryTime;
+
   static Future<String> _getAccessToken() async {
+    // 如果token存在且未过期，直接返回缓存的token
+    if (_cachedAccessToken != null && 
+        _tokenExpiryTime != null && 
+        _tokenExpiryTime!.isAfter(DateTime.now())) {
+      return _cachedAccessToken!;
+    }
+
     final String ERNIE_API_KEY = dotenv.get('ERNIE_API_KEY');
     final String ERNIE_SECRET_KEY = dotenv.get('ERNIE_SECRET_KEY');
     final authUrl = Uri.parse(
@@ -13,7 +23,10 @@ class ErnieAPI {
       final response = await http.post(authUrl);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data['access_token'];
+        _cachedAccessToken = data['access_token'];
+        // 假设token有效期为30天（百度API通常为30天）
+        _tokenExpiryTime = DateTime.now().add(Duration(days: 30));
+        return _cachedAccessToken!;
       }
       throw Exception('Failed to get access token: ${response.statusCode}');
     } catch (e) {
@@ -25,12 +38,12 @@ class ErnieAPI {
     required String systemPrompt,
     required String userMessage,
     String? assistantMessage,
-    double temperature = 0.5,
+    double temperature = 0.9,
     int maxTokens = 300,
   }) async {
     final accessToken = await _getAccessToken();
     final apiUrl = Uri.parse(
-        'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k?access_token=$accessToken');
+        'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-lite-8k?access_token=$accessToken');
 
     final headers = {'Content-Type': 'application/json'};
     
@@ -47,7 +60,7 @@ class ErnieAPI {
     
     final payload = {
       'messages': messages,
-      'system': "Answer me in English no matter what because I only understand English, do not use Chinese!!!;" + systemPrompt,  // 系统提示作为单独的参数
+      'system': "I am a engineer form NewZealand, you should only answer me in English no matter what because I only understand English, do not use Chinese, " + systemPrompt,  // 系统提示作为单独的参数
       'temperature': temperature,
       'max_tokens': maxTokens,
     };

@@ -2,7 +2,8 @@ import 'ernie_base.dart';
 
 Future<String> ernieSuggestion(String text, {String? assistantMessage}) async {
   const systemPrompt = '''
-  I am a ICT staff, I am looking forward some feasible suggestions to solving this problem(using totally around 6 words would be enough)
+    ICT Architect: Generate 6-word solutions using [Tech]-[Method]>[Metric] | Hybrid-infra priority with ITIL/ISO specs | Ex: SD-WAN+zero-trust>latency30ms | Exclude marketing/theoretical terms;
+    for example: 5G-edge encrypted computing>99.999% uptime
   ''';
 
   try {

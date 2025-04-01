@@ -2,7 +2,8 @@ import 'ernie_base.dart';
 
 Future<String> ernieSummarize(String text, {String? assistantMessage}) async {
   const systemPrompt = '''
-  I am an ICT worker and need a brief summary of this issue (totally around 6 words).
+    Generate 6-word technical summaries using: [Technology][Impact][Solution];
+    for example: "Cloud authentication latency cryptographic resolution"
   ''';
 
   try {
