@@ -1,0 +1,29 @@
+name: Gh-Pages
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0' # 可选，指定 Flutter 版本
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Web
+        run: flutter build web --release --base-href /Insight-Enco/
+
+      - name: Deploy to GitHub Pages
+        uses: bluefireteam/flutter-gh-pages@v7
+        with:
+          baseHref: /Insight-Enco/

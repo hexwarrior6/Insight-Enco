@@ -1,0 +1,23 @@
+# 在文件末尾补充
+**/flutter_assets/
+**/cmake-build-*/
+
+# Visual Studio临时文件
+*.VC.db
+*.VC.VC.opendb
+
+# Visual Studio user-specific files.
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio build-related files.
+x64/
+x86/
+
+# Visual Studio cache files
+# files ending in .cache can be ignored
+*.[Cc]ache
+# but keep track of directories ending in .cache
+!*.[Cc]ache/
