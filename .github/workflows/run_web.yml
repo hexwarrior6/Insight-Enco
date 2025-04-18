@@ -1,8 +1,11 @@
 name: Gh-Pages
 
+permissions:
+  contents: write  # 保持写入权限
+
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -11,11 +14,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 保留完整提交历史
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0' # 可选，指定 Flutter 版本
+          flutter-version: '3.29.2'
+
+      - name: Create .env from Secrets
+        run: |
+          touch .env
+          echo "ERNIE_API_KEY=${{ secrets.ERNIE_API_KEY }}" >> .env
+          echo "ERNIE_SECRET_KEY=${{ secrets.ERNIE_SECRET_KEY }}" >> .env
 
       - name: Install dependencies
         run: flutter pub get
@@ -24,6 +35,8 @@ jobs:
         run: flutter build web --release --base-href /Insight-Enco/
 
       - name: Deploy to GitHub Pages
-        uses: bluefireteam/flutter-gh-pages@v7
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          baseHref: /Insight-Enco/
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          publish_branch: gh-pages  # 正确参数名
